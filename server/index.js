@@ -7,24 +7,34 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/student-management')
-    .then(() => console.log('MongoDB connected successfully'))
-    .catch(err => console.error('MongoDB connection error:', err));
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/student-management';
+
+mongoose.connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+.then(() => console.log('✅ MongoDB connected successfully'))
+.catch((err) => console.error('❌ MongoDB connection error:', err));
 
 // Routes
 const studentRoutes = require('./routes/students');
 app.use('/students', studentRoutes);
 
-// Basic route
+// Base Route
 app.get('/', (req, res) => {
-    res.send('Student Management System API is running');
+    res.send('🎉 Student Management System API is running');
 });
 
-// Start server
+// 404 Handler (Optional, but good practice)
+app.use((req, res) => {
+    res.status(404).send('Route not found');
+});
+
+// Start Server
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
