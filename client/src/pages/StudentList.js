@@ -7,13 +7,15 @@ const StudentList = () => {
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const BASE_URL = 'https://student-management-system-90c9.onrender.com';
+
     useEffect(() => {
         fetchStudents();
     }, []);
 
     const fetchStudents = async () => {
         try {
-            const response = await axios.get('https://student-management-system-90c9.onrender.com/students');
+            const response = await axios.get(`${BASE_URL}/students`);
             setStudents(response.data);
             setLoading(false);
         } catch (error) {
@@ -26,7 +28,7 @@ const StudentList = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this student?')) {
             try {
-                await axios.delete(`https://student-management-system-90c9.onrender.com/students/${id}`);
+                await axios.delete(`${BASE_URL}/students/${id}`);
                 setStudents(students.filter(student => student._id !== id));
                 toast.success('Student deleted successfully');
             } catch (error) {
