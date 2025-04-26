@@ -13,20 +13,20 @@ const StudentList = () => {
 
     const fetchStudents = async () => {
         try {
-        const response = await axios.get('http://localhost:5000/students');
-        setStudents(response.data);
-        setLoading(false);
-    } catch (error) {
-        console.error('Error fetching students:', error);
-        toast.error('Failed to fetch students');
-        setLoading(false);
+            const response = await axios.get('https://student-management-system-90c9.onrender.com/students');
+            setStudents(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching students:', error);
+            toast.error('Failed to fetch students');
+            setLoading(false);
         }
     };
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this student?')) {
             try {
-                await axios.delete(`http://localhost:5000/students/${id}`);
+                await axios.delete(`https://student-management-system-90c9.onrender.com/students/${id}`);
                 setStudents(students.filter(student => student._id !== id));
                 toast.success('Student deleted successfully');
             } catch (error) {
