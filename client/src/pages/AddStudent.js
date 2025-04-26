@@ -32,9 +32,13 @@ const AddStudent = () => {
         if (!studentData.email.trim()) {
             newErrors.email = 'Email is required';
         } else if (!/\S+@\S+\.\S+/.test(studentData.email)) {
-            newErrors.email = 'Email is invalid';
+            newErrors.email = 'Email format is invalid';
         }
-        if (!studentData.phone.trim()) newErrors.phone = 'Phone is required';
+        if (!studentData.phone.trim()) {
+            newErrors.phone = 'Phone is required';
+        } else if (!/^\d{10}$/.test(studentData.phone)) {
+            newErrors.phone = 'Phone must be a 10-digit number';
+        }
         if (!studentData.department.trim()) newErrors.department = 'Department is required';
         if (!studentData.semester) {
             newErrors.semester = 'Semester is required';
@@ -51,26 +55,36 @@ const AddStudent = () => {
 
         if (validate()) {
             try {
-                await axios.post('https://student-management-system-90c9.onrender.com/students', studentData);
-                toast.success('Student added successfully');
+                const payload = {
+                    name: studentData.name.trim(),
+                    rollNumber: studentData.rollNumber.trim(),
+                    email: studentData.email.trim(),
+                    phone: studentData.phone.trim(),
+                    department: studentData.department.trim(),
+                    semester: parseInt(studentData.semester, 10)
+                };
+
+                await axios.post('https://student-management-system-90c9.onrender.com/students', payload);
+
+                toast.success('Student added successfully!');
                 navigate('/students');
             } catch (error) {
                 console.error('Error adding student:', error);
-                if (error.response && error.response.data && error.response.data.message) {
+                if (error.response?.data?.message) {
                     toast.error(error.response.data.message);
                 } else {
-                    toast.error('Failed to add student');
+                    toast.error('Failed to add student.');
                 }
             }
         }
     };
 
     return (
-        <div>
+        <div className="container">
             <h2 className="page-title">Add New Student</h2>
-            <div className="card">
+            <div className="card p-4">
                 <form onSubmit={handleSubmit}>
-                    <div className="form-group">
+                    <div className="form-group mb-3">
                         <label htmlFor="name">Name</label>
                         <input
                             type="text"
@@ -83,5 +97,80 @@ const AddStudent = () => {
                         {errors.name && <div style={{ color: 'red' }}>{errors.name}</div>}
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="rollNumber">Roll
+                    <div className="form-group mb-3">
+                        <label htmlFor="rollNumber">Roll Number</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="rollNumber"
+                            name="rollNumber"
+                            value={studentData.rollNumber}
+                            onChange={handleChange}
+                        />
+                        {errors.rollNumber && <div style={{ color: 'red' }}>{errors.rollNumber}</div>}
+                    </div>
+
+                    <div className="form-group mb-3">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            className="form-control"
+                            id="email"
+                            name="email"
+                            value={studentData.email}
+                            onChange={handleChange}
+                        />
+                        {errors.email && <div style={{ color: 'red' }}>{errors.email}</div>}
+                    </div>
+
+                    <div className="form-group mb-3">
+                        <label htmlFor="phone">Phone</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="phone"
+                            name="phone"
+                            value={studentData.phone}
+                            onChange={handleChange}
+                        />
+                        {errors.phone && <div style={{ color: 'red' }}>{errors.phone}</div>}
+                    </div>
+
+                    <div className="form-group mb-3">
+                        <label htmlFor="department">Department</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="department"
+                            name="department"
+                            value={studentData.department}
+                            onChange={handleChange}
+                        />
+                        {errors.department && <div style={{ color: 'red' }}>{errors.department}</div>}
+                    </div>
+
+                    <div className="form-group mb-4">
+                        <label htmlFor="semester">Semester</label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            id="semester"
+                            name="semester"
+                            value={studentData.semester}
+                            onChange={handleChange}
+                            min="1"
+                            max="8"
+                        />
+                        {errors.semester && <div style={{ color: 'red' }}>{errors.semester}</div>}
+                    </div>
+
+                    <button type="submit" className="btn btn-primary w-100">
+                        Add Student
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default AddStudent;
