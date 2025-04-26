@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 const EditStudent = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    
+
     const [studentData, setStudentData] = useState({
         name: '',
         rollNumber: '',
@@ -15,17 +15,17 @@ const EditStudent = () => {
         department: '',
         semester: ''
     });
-    
+
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(true);
-    
+
     useEffect(() => {
         fetchStudent();
     }, []);
-    
+
     const fetchStudent = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/students/${id}`);
+            const response = await axios.get(`https://student-management-system-90c9.onrender.com/students/${id}`);
             setStudentData(response.data);
             setLoading(false);
         } catch (error) {
@@ -34,17 +34,17 @@ const EditStudent = () => {
             navigate('/students');
         }
     };
-    
+
     const handleChange = (e) => {
         setStudentData({
             ...studentData,
             [e.target.name]: e.target.value
         });
     };
-    
+
     const validate = () => {
         const newErrors = {};
-        
+
         if (!studentData.name.trim()) newErrors.name = 'Name is required';
         if (!studentData.rollNumber.trim()) newErrors.rollNumber = 'Roll Number is required';
         if (!studentData.email.trim()) {
@@ -59,17 +59,17 @@ const EditStudent = () => {
         } else if (studentData.semester < 1 || studentData.semester > 8) {
             newErrors.semester = 'Semester must be between 1 and 8';
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (validate()) {
             try {
-                await axios.put(`http://localhost:5000/students/${id}`, studentData);
+                await axios.put(`https://student-management-system-90c9.onrender.com/students/${id}`, studentData);
                 toast.success('Student updated successfully');
                 navigate('/students');
             } catch (error) {
@@ -82,11 +82,11 @@ const EditStudent = () => {
             }
         }
     };
-    
+
     if (loading) {
         return <div>Loading...</div>;
     }
-    
+
     return (
         <div>
             <h2 className="page-title">Edit Student</h2>
@@ -104,7 +104,7 @@ const EditStudent = () => {
                         />
                         {errors.name && <div style={{ color: 'red' }}>{errors.name}</div>}
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="rollNumber">Roll Number</label>
                         <input
@@ -117,7 +117,7 @@ const EditStudent = () => {
                         />
                         {errors.rollNumber && <div style={{ color: 'red' }}>{errors.rollNumber}</div>}
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="email">Email</label>
                         <input
@@ -130,7 +130,7 @@ const EditStudent = () => {
                         />
                         {errors.email && <div style={{ color: 'red' }}>{errors.email}</div>}
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="phone">Phone</label>
                         <input
@@ -143,7 +143,7 @@ const EditStudent = () => {
                         />
                         {errors.phone && <div style={{ color: 'red' }}>{errors.phone}</div>}
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="department">Department</label>
                         <input
@@ -156,7 +156,7 @@ const EditStudent = () => {
                         />
                         {errors.department && <div style={{ color: 'red' }}>{errors.department}</div>}
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="semester">Semester</label>
                         <input
@@ -171,7 +171,7 @@ const EditStudent = () => {
                         />
                         {errors.semester && <div style={{ color: 'red' }}>{errors.semester}</div>}
                     </div>
-                    
+
                     <div>
                         <button type="submit" className="btn btn-success">Update Student</button>
                     </div>
